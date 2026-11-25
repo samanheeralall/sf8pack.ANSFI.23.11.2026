@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ author.name }} - Community Library{% endblock %}
+
+{% block body %}
+    <h1>{{ author.name }}</h1>
+
+    {% if author.biography %}
+        <p>{{ author.biography }}</p>
+    {% endif %}
+
+    <hr>
+
+    <h2>Books ({{ author.books|length }})</h2>
+    <ul>
+        {% for book in author.books %}
+            <li>{{ book.title }}{% if book.publicationDate %} &mdash; {{ book.publicationDate|date('Y') }}{% endif %}</li>
+        {% else %}
+            <li>No books in the catalog yet.</li>
+        {% endfor %}
+    </ul>
+
+    <a href="{{ path('app_author_index') }}" class="btn btn-outline-secondary">← Back to all authors</a>
+{% endblock %}

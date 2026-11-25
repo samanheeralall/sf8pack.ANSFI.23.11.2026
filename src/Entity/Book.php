@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\BookRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -34,6 +36,24 @@ class Book
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $coverUrl = null;
+
+    /**
+     * @var Collection<int, Genre>
+     */
+    #[ORM\ManyToMany(targetEntity: Genre::class, inversedBy: 'books')]
+    private Collection $genres;
+
+    /**
+     * @var Collection<int, Author>
+     */
+    #[ORM\ManyToMany(targetEntity: Author::class, inversedBy: 'books')]
+    private Collection $authors;
+
+    public function __construct()
+    {
+        $this->genres = new ArrayCollection();
+        $this->authors = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -120,6 +140,54 @@ class Book
     public function setCoverUrl(?string $coverUrl): static
     {
         $this->coverUrl = $coverUrl;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Genre>
+     */
+    public function getGenres(): Collection
+    {
+        return $this->genres;
+    }
+
+    public function addGenre(Genre $genre): static
+    {
+        if (!$this->genres->contains($genre)) {
+            $this->genres->add($genre);
+        }
+
+        return $this;
+    }
+
+    public function removeGenre(Genre $genre): static
+    {
+        $this->genres->removeElement($genre);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Author>
+     */
+    public function getAuthors(): Collection
+    {
+        return $this->authors;
+    }
+
+    public function addAuthor(Author $author): static
+    {
+        if (!$this->authors->contains($author)) {
+            $this->authors->add($author);
+        }
+
+        return $this;
+    }
+
+    public function removeAuthor(Author $author): static
+    {
+        $this->authors->removeElement($author);
 
         return $this;
     }
