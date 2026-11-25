@@ -6,16 +6,19 @@
     <h1>Our Collection ({{ books|length }} books)</h1>
 
     <div class="book-grid">
-        {% for slug, book in books %}
+        {% for book in books %}
             <div class="book-card">
                 <h2>
-                    <a href="{{ path('app_book_show', {slug: slug}) }}">
-                        {{ book.title }}
-                    </a>
+                    <a href="{{ path('app_book_show', {id: book.id}) }}">{{ book.title }}</a>
                 </h2>
-                <p>{{ book.author }} &mdash; {{ book.year }}</p>
-                <p><em>{{ book.genre }}</em></p>
+                <p>
+                    {{ book.authors|map(a => a.name)|join(', ') }}
+                    {% if book.publicationDate %} &mdash; {{ book.publicationDate|date('Y') }}{% endif %}
+                </p>
+                <p><em>{{ book.genres|map(g => g.name)|join(', ') }}</em></p>
             </div>
+        {% else %}
+            <p>No books found.</p>
         {% endfor %}
     </div>
 {% endblock %}

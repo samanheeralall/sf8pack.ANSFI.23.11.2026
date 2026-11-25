@@ -119,14 +119,16 @@ footer {
 
 /* Append to assets/styles/app.css */
 
-.book-grid {
+.book-grid,
+.author-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 1.5rem;
     margin-top: 1.5rem;
 }
 
-.book-card {
+.book-card,
+.author-card {
     border: 1px solid #ddd;
     border-radius: 8px;
     padding: 1.5rem;
@@ -135,16 +137,19 @@ footer {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
 }
 
-.book-card h2 {
+.book-card h2,
+.author-card h2 {
     margin-top: 0;
 }
 
-.book-card h2 a {
+.book-card h2 a,
+.author-card h2 a {
     text-decoration: none;
     color: #333;
 }
 
-.book-card h2 a:hover {
+.book-card h2 a:hover,
+.author-card h2 a:hover {
     color: #0066cc;
     text-decoration: underline;
 }
