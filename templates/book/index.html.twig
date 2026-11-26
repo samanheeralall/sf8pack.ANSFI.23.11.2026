@@ -16,6 +16,11 @@
                     {% if book.publicationDate %} &mdash; {{ book.publicationDate|date('Y') }}{% endif %}
                 </p>
                 <p><em>{{ book.genres|map(g => g.name)|join(', ') }}</em></p>
+                <p>
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <a href="{{ path('app_admin_book_edit', {id: book.id}) }}" class="btn btn-outline-secondary">Edit</a>
+                    {% endif %}
+                </p>
             </div>
         {% else %}
             <p>No books found.</p>

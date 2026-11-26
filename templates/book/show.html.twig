@@ -28,5 +28,11 @@
         {% if book.isbn %} &middot; ISBN {{ book.isbn }}{% endif %}
     </p>
 
+    <p>
+        {% if is_granted('ROLE_ADMIN') %}
+            <a href="{{ path('app_admin_book_edit', {id: book.id}) }}" class="btn btn-outline-secondary">Edit</a>
+        {% endif %}
+    </p>
+
     <a href="{{ path('app_book_index') }}" class="btn btn-outline-secondary">← Back to all books</a>
 {% endblock %}

@@ -34,6 +34,10 @@
                     <a href="{{ path('app_register') }}">Register</a>
                 {% endif %}
             </div>
+
+            {% if is_granted('ROLE_ADMIN') %}
+                <a href="{{ path('app_admin_books') }}">Admin</a>
+            {% endif %}
         </nav>
     </header>
     <main>
