@@ -2,6 +2,7 @@
 
 namespace App\Form;
 
+use App\Search\BookSearchCriteria;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\SearchType;
@@ -33,6 +34,7 @@ class BookSearchType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
+            'data_class'      => BookSearchCriteria::class,
             'method'          => 'GET',
             'csrf_protection' => false,
         ]);

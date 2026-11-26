@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Book;
 use App\Form\BookSearchType;
 use App\Repository\BookRepository;
+use App\Search\BookSearchCriteria;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,12 +18,12 @@ final class BookController extends AbstractController
     #[Route('', name: 'app_book_index', methods: ['GET'])]
     public function index(BookRepository $bookRepository, Request $request): Response
     {
-        $form = $this->createForm(BookSearchType::class);
+        // Non soumis → valeurs par défaut du DTO → liste complète
+        $criteria = new BookSearchCriteria();
+        $form = $this->createForm(BookSearchType::class, $criteria);
         $form->handleRequest($request);
 
-        $books = $bookRepository->search(
-            $form->isSubmitted() && $form->isValid() ? $form->getData() : []
-        );
+        $books = $bookRepository->search($criteria);
 
         return $this->render('book/index.html.twig', [
             'books' => $books,

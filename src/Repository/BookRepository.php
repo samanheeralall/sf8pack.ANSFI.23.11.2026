@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Book;
+use App\Search\BookSearchCriteria;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -54,23 +55,29 @@ class BookRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
-    public function search(array $criteria = []): array
+    /**
+     * @return Book[]
+     */
+    public function search(BookSearchCriteria $criteria): array
     {
-        $qb = $this->createQueryBuilder('b');
+        // Jointure d'affichage : charge tous les auteurs en une requête (évite le N+1)
+        $qb = $this->createQueryBuilder('b')
+            ->leftJoin('b.authors', 'authors')
+            ->addSelect('authors');
 
-        if (!empty($criteria['q'])) {
+        if ($criteria->q) {
             $qb->andWhere('b.title LIKE :q')
-                ->setParameter('q', '%'.$criteria['q'].'%');
+                ->setParameter('q', '%'.$criteria->q.'%');
         }
 
-        if (!empty($criteria['author'])) {
-            // innerJoin sans addSelect : on filtre sur les auteurs sans tronquer book.authors
+        if ($criteria->author) {
+            // Jointure de filtre, sans addSelect : on filtre sur les auteurs sans tronquer book.authors
             $qb->innerJoin('b.authors', 'a')
                 ->andWhere('a.name LIKE :author')
-                ->setParameter('author', '%'.$criteria['author'].'%');
+                ->setParameter('author', '%'.$criteria->author.'%');
         }
 
-        if (!empty($criteria['available'])) {
+        if ($criteria->available) {
             $qb->andWhere('b.available = true');
         }
 
