@@ -1,29 +1,42 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Books - Community Library{% endblock %}
+{% block title %}Books — Community Library{% endblock %}
 
 {% block body %}
-    <h1>Our Collection ({{ books|length }} books)</h1>
+    <h1>Our collection ({{ books|length }} books)</h1>
 
-    <div class="book-grid">
-        {% for book in books %}
-            <div class="book-card">
-                <h2>
-                    <a href="{{ path('app_book_show', {id: book.id}) }}">{{ book.title }}</a>
-                </h2>
-                <p>
-                    {{ book.authors|map(a => a.name)|join(', ') }}
-                    {% if book.publicationDate %} &mdash; {{ book.publicationDate|date('Y') }}{% endif %}
-                </p>
-                <p><em>{{ book.genres|map(g => g.name)|join(', ') }}</em></p>
-                <p>
-                    {% if is_granted('ROLE_ADMIN') %}
-                        <a href="{{ path('app_admin_book_edit', {id: book.id}) }}" class="btn btn-outline-secondary">Edit</a>
-                    {% endif %}
-                </p>
+    <div class="listing-layout">
+        <aside class="listing-sidebar">
+            <h2>Filter</h2>
+            {{ form_start(form) }}
+            {{ form_row(form.q) }}
+            {{ form_row(form.author) }}
+            {{ form_row(form.available) }}
+            <button type="submit">Search</button>
+            {{ form_end(form) }}
+        </aside>
+
+        <section class="listing-main">
+            <div class="book-grid">
+                {% for book in books %}
+                    <div class="book-card">
+                        <h2>
+                            <a href="{{ path('app_book_show', {id: book.id}) }}">
+                                {{ book.title }}
+                            </a>
+                        </h2>
+                        <p>
+                            {{ book.authors|map(a => a.name)|join(', ') }}
+                            {% if book.publicationDate %}&mdash; {{ book.publicationDate|date('Y') }}{% endif %}
+                        </p>
+                        {% if is_granted('ROLE_ADMIN') %}
+                            <a href="{{ path('app_admin_book_edit', {id: book.id}) }}" class="btn btn-outline-secondary">Edit</a>
+                        {% endif %}
+                    </div>
+                {% else %}
+                    <p>No books found.</p>
+                {% endfor %}
             </div>
-        {% else %}
-            <p>No books found.</p>
-        {% endfor %}
+        </section>
     </div>
 {% endblock %}
