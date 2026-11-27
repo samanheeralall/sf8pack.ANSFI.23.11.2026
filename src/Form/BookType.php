@@ -33,9 +33,16 @@ class BookType extends AbstractType
                 'input' => 'datetime_immutable',
                 'required' => false,
             ])
-            ->add('available', CheckboxType::class, [
+        ;
+
+        // Champ présent seulement si le controller l'autorise (voter CHANGE_AVAILABILITY)
+        if ($options['can_change_availability']) {
+            $builder->add('available', CheckboxType::class, [
                 'required' => false,
-            ])
+            ]);
+        }
+
+        $builder
             ->add('language', LanguageType::class, [
                 'required' => false,
                 'preferred_choices' => ['en', 'fr', 'de', 'es'],
@@ -61,6 +68,8 @@ class BookType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Book::class,
+            'can_change_availability' => false,
         ]);
+        $resolver->setAllowedTypes('can_change_availability', 'bool');
     }
 }

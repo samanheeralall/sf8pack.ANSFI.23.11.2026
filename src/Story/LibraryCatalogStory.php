@@ -14,15 +14,15 @@ final class LibraryCatalogStory extends Story
 {
     public function build(): void
     {
-        UserFactory::createOne(['email' => 'admin@library.local', 'roles' => ['ROLE_ADMIN']]);
-        UserFactory::createOne(['email' => 'reader@library.local']);
+        UserFactory::createOne(['email' => 'admin@library.local',     'roles' => ['ROLE_ADMIN']]);
         UserFactory::createOne(['email' => 'manager@library.local',   'roles' => ['ROLE_MANAGER']]);
-        UserFactory::createOne(['email' => 'librarian@library.local', 'roles' => ['ROLE_LIBRARIAN']]);
+        $librarian = UserFactory::createOne(['email' => 'librarian@library.local', 'roles' => ['ROLE_LIBRARIAN']]);
         UserFactory::createOne(['email' => 'webmaster@library.local', 'roles' => ['ROLE_WEBMASTER']]);
+        $reader    = UserFactory::createOne(['email' => 'reader@library.local']);
 
         $books = require dirname(__DIR__, 2) . '/fixtures/book_fixtures.php';
 
-        BookFactory::createMany(\count($books), static function (int $i) use ($books) {
+        BookFactory::createMany(\count($books), static function (int $i) use ($books, $librarian, $reader) {
             $author = $books[$i - 1]['author'];
             $genres = $books[$i - 1]['genres'];
             unset($books[$i - 1]['author'], $books[$i - 1]['genres']);
@@ -34,6 +34,8 @@ final class LibraryCatalogStory extends Story
                     static fn (string $name) => GenreFactory::findOrCreate(['name' => $name]),
                     $genres,
                 ),
+                // Contributeurs mélangés : 1 livre sur 3 ajouté par le reader
+                'addedBy' => $i % 3 === 0 ? $reader : $librarian,
             ];
         });
 
